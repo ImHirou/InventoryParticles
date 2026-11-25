@@ -1,0 +1,22 @@
+{
+    "emitters": [
+        {
+            "code": "bee",
+            "shape": "dot",
+            "space": "anchor",
+            "rate": { "avg": 0.4, "var": 0 },
+            "burst": 3,
+            "spawnArea": { "type": "ring", "radius": 0.5, "innerRadius": 0.32 },
+            "color": [ 235, 180, 40, 255 ],
+            "size": { "avg": 0.065, "var": 0.01 },
+            "lifeLength": { "avg": 7, "var": 2 },
+            "velocity": [ { "avg": 0, "var": 0.5 }, { "avg": 0, "var": 0.5 } ],
+            "randomVelocityChange": 6,
+            "attraction": 5,
+            "drag": 2,
+            "swirl": { "avg": 0, "var": 0.25 },
+            "fadeIn": 0.4,
+            "fadeOut": 0.6
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "emitters": [
+        {
+            "code": "glint",
+            "shape": "star",
+            "blend": "glow",
+            "layer": "aboveitem",
+            "rate": { "avg": 1.5, "var": 0 },
+            "burst": 1,
+            "spawnArea": { "type": "box", "width": 0.62, "height": 0.56 },
+            "color": [ 255, 255, 255, 255 ],
+            "size": { "avg": 0.2, "var": 0.06 },
+            "sizeEvolve": { "transform": "sinus", "factor": 3.1416 },
+            "lifeLength": { "avg": 0.5, "var": 0.15 },
+            "fadeIn": 0.1,
+            "fadeOut": 0.2
+        },
+        {
+            "code": "glitter",
+            "shape": "dot",
+            "blend": "glow",
+            "layer": "aboveitem",
+            "rate": { "avg": 3.5, "var": 0 },
+            "spawnArea": { "type": "box", "width": 0.7, "height": 0.62 },
+            "color": [ 255, 255, 255, 210 ],
+            "size": { "avg": 0.05, "var": 0.015 },
+            "lifeLength": { "avg": 0.45, "var": 0.15 },
+            "fadeIn": 0.12,
+            "fadeOut": 0.25
+        }
+    ]
+}

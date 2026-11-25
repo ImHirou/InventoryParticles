@@ -1,0 +1,21 @@
+{
+    "emitters": [
+        {
+            "code": "motes",
+            "shape": "square",
+            "blend": "glow",
+            "rate": { "avg": 9, "var": 0 },
+            "burst": 4,
+            "spawnArea": { "type": "ring", "radius": 0.58, "innerRadius": 0.3 },
+            "hsvaColor": [ { "avg": 117, "var": 7 }, { "avg": 180, "var": 0 }, { "avg": 175, "var": 30 }, { "avg": 150, "var": 0 } ],
+            "size": { "avg": 0.11, "var": 0.035 },
+            "sizeEvolve": { "transform": "quadratic", "factor": -0.6 },
+            "opacityEvolve": { "transform": "linear", "factor": -150 },
+            "lifeLength": { "avg": 1.75, "var": 0.25 },
+            "velocity": [ { "avg": 0, "var": 0.05 }, { "avg": 0.03, "var": 0.05 } ],
+            "randomVelocityChange": 0.3,
+            "swirl": { "avg": 0.14, "var": 0.05 },
+            "fadeIn": 0.15
+        }
+    ]
+}

@@ -1,0 +1,31 @@
+{
+    "emitters": [
+        {
+            "code": "fire",
+            "shape": "square",
+            "blend": "glow",
+            "layer": "aboveitem",
+            "rate": { "avg": 14, "var": 0 },
+            "spawnArea": { "type": "circle", "radius": 0.025 },
+            "hsvaColor": [ { "avg": 20, "var": 20 }, { "avg": 255, "var": 50 }, { "avg": 255, "var": 50 }, { "avg": 255, "var": 0 } ],
+            "opacityEvolve": { "transform": "quadratic", "factor": -18 },
+            "size": { "avg": 0.085, "var": 0.015 },
+            "sizeEvolve": { "transform": "linear", "factor": -0.4 },
+            "lifeLength": { "avg": 0.28, "var": 0.06 },
+            "velocity": [ { "avg": 0, "var": 0.02 }, { "avg": 0.4, "var": 0.08 } ]
+        },
+        {
+            "code": "smoke",
+            "shape": "square",
+            "rate": { "avg": 0.8, "var": 0 },
+            "origin": [ 0, 0.2 ],
+            "hsvaColor": [ { "avg": 0, "var": 0 }, { "avg": 0, "var": 0 }, { "avg": 45, "var": 15 }, { "avg": 180, "var": 40 } ],
+            "opacityEvolve": { "transform": "quadratic", "factor": -14 },
+            "size": { "avg": 0.055, "var": 0.012 },
+            "sizeEvolve": { "transform": "linear", "factor": 0.8 },
+            "lifeLength": { "avg": 1.0, "var": 0.2 },
+            "velocity": [ { "avg": 0, "var": 0.025 }, { "avg": 0.22, "var": 0.04 } ],
+            "wobble": { "amplitude": 0.015, "frequency": 1.1 }
+        }
+    ]
+}

@@ -1,0 +1,47 @@
+{
+    "emitters": [
+        {
+            "code": "fire",
+            "shape": "square",
+            "blend": "glow",
+            "layer": "aboveitem",
+            "rate": { "avg": 28, "var": 0 },
+            "spawnArea": { "type": "circle", "radius": 0.083 },
+            "hsvaColor": [ { "avg": 20, "var": 20 }, { "avg": 255, "var": 50 }, { "avg": 255, "var": 50 }, { "avg": 255, "var": 0 } ],
+            "opacityEvolve": { "transform": "quadratic", "factor": -20 },
+            "size": { "avg": 0.095, "var": 0.02 },
+            "sizeEvolve": { "transform": "linear", "factor": -0.4 },
+            "lifeLength": { "avg": 0.32, "var": 0.08 },
+            "velocity": [ { "avg": 0, "var": 0.03 }, { "avg": 0.38, "var": 0.08 } ]
+        },
+        {
+            "code": "smoke",
+            "shape": "square",
+            "rate": { "avg": 1.5, "var": 0 },
+            "origin": [ 0, 0.06 ],
+            "spawnArea": { "type": "circle", "radius": 0.083 },
+            "hsvaColor": [ { "avg": 0, "var": 0 }, { "avg": 0, "var": 0 }, { "avg": 60, "var": 30 }, { "avg": 170, "var": 30 } ],
+            "opacityEvolve": { "transform": "quadratic", "factor": -16 },
+            "size": { "avg": 0.055, "var": 0.012 },
+            "sizeEvolve": { "transform": "linear", "factor": 1 },
+            "lifeLength": { "avg": 1.1, "var": 0.2 },
+            "velocity": [ { "avg": 0, "var": 0.03 }, { "avg": 0.28, "var": 0.06 } ],
+            "wobble": { "amplitude": 0.02, "frequency": 1.2 }
+        },
+        {
+            "code": "embers",
+            "shape": "square",
+            "blend": "glow",
+            "layer": "aboveitem",
+            "rate": { "avg": 0.8, "var": 0 },
+            "spawnArea": { "type": "circle", "radius": 0.083 },
+            "hsvaColor": [ { "avg": 20, "var": 20 }, { "avg": 255, "var": 50 }, { "avg": 255, "var": 50 }, { "avg": 255, "var": 0 } ],
+            "size": { "avg": 0.045, "var": 0.012 },
+            "sizeEvolve": { "transform": "quadratic", "factor": -0.7 },
+            "lifeLength": { "avg": 1.2, "var": 0.3 },
+            "velocity": [ { "avg": 0, "var": 0.08 }, { "avg": 0.3, "var": 0.06 } ],
+            "gravityEffect": { "avg": -0.03, "var": 0.06 },
+            "randomVelocityChange": 0.22
+        }
+    ]
+}

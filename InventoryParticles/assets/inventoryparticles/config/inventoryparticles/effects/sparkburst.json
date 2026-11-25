@@ -1,0 +1,39 @@
+{
+    "emitters": [
+        {
+            "code": "sparks",
+            "shape": "square",
+            "blend": "glow",
+            "layer": "top",
+            "rate": { "avg": 0, "var": 0 },
+            "burst": 14,
+            "spawnArea": { "type": "circle", "radius": 0.2 },
+            "color": [ 255, 233, 83, 255 ],
+            "greenEvolve": { "transform": "linear", "factor": -233 },
+            "blueEvolve": { "transform": "linear", "factor": -83 },
+            "size": { "avg": 0.06, "var": 0.015 },
+            "sizeEvolve": { "transform": "linear", "factor": -0.4 },
+            "lifeLength": { "avg": 0.55, "var": 0.2 },
+            "velocity": [ { "avg": 0, "var": 1.6 }, { "avg": 0.8, "var": 1.2 } ],
+            "gravityEffect": { "avg": 3, "var": 0.5 },
+            "drag": 0.7
+        },
+        {
+            "code": "embers",
+            "shape": "dot",
+            "blend": "glow",
+            "layer": "top",
+            "rate": { "avg": 0, "var": 0 },
+            "burst": 5,
+            "spawnArea": { "type": "circle", "radius": 0.25 },
+            "color": [ 255, 140, 40, 230 ],
+            "greenEvolve": { "transform": "linear", "factor": -80 },
+            "size": { "avg": 0.065, "var": 0.02 },
+            "sizeEvolve": { "transform": "linear", "factor": -0.5 },
+            "opacityEvolve": { "transform": "linear", "factor": -230 },
+            "lifeLength": { "avg": 0.9, "var": 0.3 },
+            "velocity": [ { "avg": 0, "var": 0.4 }, { "avg": 0.35, "var": 0.3 } ],
+            "randomVelocityChange": 0.4
+        }
+    ]
+}

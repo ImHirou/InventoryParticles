@@ -1,0 +1,21 @@
+{
+    "emitters": [
+        {
+            "code": "fly",
+            "shape": "dot",
+            "space": "anchor",
+            "rate": { "avg": 0.3, "var": 0 },
+            "burst": 2,
+            "spawnArea": { "type": "ring", "radius": 0.4, "innerRadius": 0.2 },
+            "color": [ 55, 55, 50, 245 ],
+            "size": { "avg": 0.06, "var": 0.01 },
+            "lifeLength": { "avg": 6, "var": 2 },
+            "velocity": [ { "avg": 0, "var": 0.5 }, { "avg": 0, "var": 0.5 } ],
+            "randomVelocityChange": 7,
+            "attraction": 8,
+            "drag": 2.5,
+            "fadeIn": 0.4,
+            "fadeOut": 0.6
+        }
+    ]
+}

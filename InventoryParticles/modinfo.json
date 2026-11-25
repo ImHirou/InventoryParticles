@@ -1,0 +1,15 @@
+{
+    "$schema": "https://moddbcdn.vintagestory.at/schema/modinfo.latest.json",
+    "type": "Code",
+    "modid": "inventoryparticles",
+    "name": "Inventory Particles",
+    "authors": [ "SecretLovers" ],
+    "description": "Emit particles from items in inventory.",
+    "version": "1.0.0",
+    "side": "Client",
+    "requiredOnClient": false,
+    "requiredOnServer": false,
+    "dependencies": {
+        "game": "1.23.0-pre.2"
+    }
+}

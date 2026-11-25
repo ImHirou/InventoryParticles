@@ -1,0 +1,19 @@
+{
+    "emitters": [
+        {
+            "code": "twinkle",
+            "shape": "star",
+            "blend": "glow",
+            "layer": "aboveitem",
+            "rate": { "avg": 2.5, "var": 0 },
+            "burst": 1,
+            "spawnArea": { "type": "box", "width": 0.55, "height": 0.55 },
+            "color": [ 255, 255, 255, 235 ],
+            "size": { "avg": 0.15, "var": 0.05 },
+            "sizeEvolve": { "transform": "sinus", "factor": 3.1416 },
+            "lifeLength": { "avg": 0.6, "var": 0.2 },
+            "fadeIn": 0.15,
+            "fadeOut": 0.25
+        }
+    ]
+}

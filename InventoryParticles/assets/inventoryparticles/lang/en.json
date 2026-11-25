@@ -1,0 +1,19 @@
+{
+    "config-load-failed": "Inventory Particles: ModConfig/{0} could not be read, using the default settings. A copy of the file was saved as {1}.",
+    "command-description": "Inventory particles: reload the effects, preview them and debug them",
+    "command-reload-description": "Reloads the config file and all particle effects and rules",
+    "command-reload-done": "Reloaded: {0} effects, {1} active rules.",
+    "command-reload-failed": "ModConfig/{0} could not be read and was copied to {1}; effects and rules were reloaded anyway.",
+    "command-list-description": "Lists the known effects and the active rules",
+    "command-list-done": "Effects: {0}\nRules (in the order they are checked): {1}",
+    "command-play-description": "Plays an effect at the mouse cursor, e.g. .inventoryparticles play hotmetal 5",
+    "command-play-done": "Playing {0} at the mouse cursor.",
+    "command-play-unknown": "Unknown or disabled effect {0}. See .inventoryparticles list",
+    "command-not-ready": "The world is not loaded yet.",
+    "command-debug-description": "Toggles anchor outlines and chat messages about the effects of the hovered stack, the stack on the cursor and the stacks in hand",
+    "command-debug-on": "Particle debugging on: yellow frames are anchors, red dots are emitter origins.",
+    "command-debug-off": "Particle debugging off.",
+    "command-heat-description": "Sets the temperature of the stack on the cursor (or in your hand) on this client only, to test hot item particles",
+    "command-heat-done": "{0} is now {1:0} °C on this client. The server will reset it the next time it updates the slot.",
+    "command-heat-nostack": "Hold a stack on the mouse cursor or in your hand."
+}

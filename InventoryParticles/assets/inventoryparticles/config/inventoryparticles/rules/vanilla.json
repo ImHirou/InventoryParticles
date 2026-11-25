@@ -1,0 +1,182 @@
+[
+    {
+        "code": "temporal",
+        "priority": 100,
+        "match": { "codes": [ "game:gear-temporal", "game:largegear-temporal*", "game:clothes-neck-gear-amulet-temporal" ] },
+        "effects": [ "temporal" ]
+    },
+    {
+        "code": "rustygear",
+        "priority": 100,
+        "match": { "codes": [ "game:gear-rusty" ] },
+        "effects": [ "rust" ]
+    },
+    {
+        "code": "rot",
+        "priority": 100,
+        "match": { "codes": [ "game:rot" ] },
+        "effects": [ "rot" ]
+    },
+    {
+        "code": "gem-diamond",
+        "priority": 100,
+        "match": { "codes": [ "game:gem-diamond-rough" ] },
+        "effects": [ "sparkle" ],
+        "tint": [ 0.8, 0.95, 1, 1 ]
+    },
+    {
+        "code": "gem-emerald",
+        "priority": 100,
+        "match": { "codes": [ "game:gem-emerald-rough" ] },
+        "effects": [ "sparkle" ],
+        "tint": [ 0.3, 1, 0.5, 1 ]
+    },
+    {
+        "code": "gem-peridot",
+        "priority": 100,
+        "match": { "codes": [ "game:gem-olivine_peridot-rough" ] },
+        "effects": [ "sparkle" ],
+        "tint": [ 0.75, 1, 0.3, 1 ]
+    },
+    {
+        "code": "jewelry-gold",
+        "priority": 100,
+        "match": {
+            "codes": [
+                "game:clothes-neck-fancy-royal-collar", "game:clothes-neck-golden-necklace", "game:clothes-neck-noble-necklace",
+                "game:clothes-neck-king", "game:clothes-neck-deep", "game:clothes-neck-simple-cross", "game:clothes-neck-teardrop-amulet",
+                "game:clothes-neck-gear-amulet-gold", "game:clothes-neck-gorget", "game:clothes-neck-gorget-vulture",
+                "game:clothes-neck-goldpurple", "game:clothes-neck-nazar2",
+                "game:clothes-arm-gem-studded-bracelet", "game:clothes-arm-long-gem-studded-bracelet",
+                "game:clothes-head-crown", "game:clothes-head-crown-byzantine", "game:clothes-head-gold-coronet", "game:clothes-head-mianguan",
+                "game:clothes-emblem-royal-pin", "game:clothes-emblem-falcon",
+                "game:clothes-waist-gold-waist-chain", "game:clothes-waist-fancy-royal-belt", "game:clothes-waist-king", "game:clothes-waist-goldpurple"
+            ]
+        },
+        "effects": [ "shine" ],
+        "tint": [ 1, 0.8, 0.42, 1 ]
+    },
+    {
+        "code": "jewelry-silver",
+        "priority": 100,
+        "match": {
+            "codes": [
+                "game:clothes-neck-merchant-amulet", "game:clothes-neck-lunula", "game:clothes-neck-silverblue", "game:clothes-neck-fancy-cross",
+                "game:clothes-arm-silver-bracelet", "game:clothes-arm-silver-chain", "game:clothes-arm-large-silver-bracelets", "game:clothes-arm-merchant-bracelet",
+                "game:clothes-head-silver-diadem",
+                "game:clothes-emblem-silver-pin", "game:clothes-emblem-silver-star", "game:clothes-emblem-silver-brooch",
+                "game:clothes-emblem-cloak-clasp-beads", "game:clothes-emblem-sailor",
+                "game:clothes-waist-silverblue"
+            ]
+        },
+        "effects": [ "shine" ],
+        "tint": [ 0.85, 0.93, 1, 1 ]
+    },
+    {
+        "code": "bucket",
+        "priority": 100,
+        "match": { "classes": [ "BlockBucket" ] },
+        "requireLiquid": true,
+        "liquidTint": true,
+        "effects": [ "drip" ],
+        "origin": [ 0, -0.35 ]
+    },
+    {
+        "code": "wateringcan",
+        "priority": 100,
+        "match": { "classes": [ "BlockWateringCan" ] },
+        "requireLiquid": true,
+        "liquidTint": true,
+        "effects": [ "drip-spout" ],
+        "origin": [ -0.29, -0.07 ]
+    },
+    {
+        "code": "jug",
+        "priority": 100,
+        "match": { "codes": [ "game:jug-*-fired" ] },
+        "requireLiquid": true,
+        "liquidTint": true,
+        "effects": [ "drip-narrow" ],
+        "origin": [ 0.01, -0.36 ]
+    },
+    {
+        "code": "bowl",
+        "priority": 100,
+        "match": { "codes": [ "game:bowl-*-fired" ] },
+        "requireLiquid": true,
+        "liquidTint": true,
+        "effects": [ "drip-narrow" ],
+        "origin": [ 0.01, -0.27 ]
+    },
+    {
+        "code": "candle",
+        "priority": 100,
+        "match": { "codes": [ "game:candle" ] },
+        "effects": [ "candleflame" ],
+        "origin": [ 0.18, 0.25 ]
+    },
+    {
+        "code": "skep",
+        "priority": 100,
+        "match": { "codes": [ "game:skep-*-populated-*" ] },
+        "effects": [ "bees" ]
+    },
+    {
+        "code": "torch",
+        "priority": 100,
+        "match": { "codes": [ "game:torch-*-lit-*" ] },
+        "effects": [ "torchflame" ],
+        "origin": [ -0.07, 0.28 ]
+    },
+    {
+        "code": "oillamp",
+        "priority": 100,
+        "match": { "codes": [ "game:oillamp-*-up", "game:oillamp-*-down", "game:oillamp-*-north", "game:oillamp-*-east", "game:oillamp-*-south", "game:oillamp-*-west" ] },
+        "effects": [ "lampflame" ],
+        "origin": [ -0.01, 0.1 ]
+    },
+    {
+        "code": "mealbowl",
+        "priority": 60,
+        "match": { "classes": [ "BlockMeal" ] },
+        "minTemperature": 50,
+        "intensityByTemperature": { "from": 50, "to": 200, "min": 0.15, "max": 0.5 },
+        "effects": [ "steam" ]
+    },
+    {
+        "code": "pot",
+        "priority": 50,
+        "match": { "classes": [ "BlockCookingContainer", "BlockCookedContainer" ] },
+        "minTemperature": 50,
+        "intensityByTemperature": { "from": 50, "to": 200, "min": 0.3, "max": 1 },
+        "effects": [ "steam" ]
+    },
+    {
+        "code": "spoiling",
+        "priority": 10,
+        "minSpoilage": 0.5,
+        "effects": [ "flies" ]
+    },
+    {
+        "code": "hotmetal-pickup",
+        "priority": 0,
+        "triggers": [ "pickup" ],
+        "minTemperature": 500,
+        "intensityByTemperature": { "from": 500, "to": 1300, "min": 0.6, "max": 1 },
+        "effects": [ "sparkburst" ]
+    },
+    {
+        "code": "toohot",
+        "priority": 0,
+        "triggers": [ "toohot" ],
+        "intensityByTemperature": { "from": 250, "to": 1300, "min": 0.6, "max": 1 },
+        "effects": [ "burnburst" ]
+    },
+    {
+        "code": "hotmetal",
+        "priority": 0,
+        "minTemperature": 250,
+        "intensityByTemperature": { "from": 250, "to": 1300, "min": 0.2, "max": 1 },
+        "effects": [ "hotmetal" ]
+    }
+]

@@ -1,0 +1,18 @@
+{
+    "emitters": [
+        {
+            "code": "drop",
+            "shape": "drop",
+            "rate": { "avg": 0.7, "var": 0 },
+            "spawnArea": { "type": "box", "width": 0.3, "height": 0.02 },
+            "color": [ 255, 255, 255, 235 ],
+            "size": { "avg": 0.085, "var": 0.012 },
+            "hang": { "avg": 0.8, "var": 0.35 },
+            "lifeLength": { "avg": 6, "var": 0 },
+            "gravityEffect": { "avg": 10, "var": 1.5 },
+            "drag": 0.8,
+            "stretch": 0.1,
+            "fadeIn": 0.15
+        }
+    ]
+}

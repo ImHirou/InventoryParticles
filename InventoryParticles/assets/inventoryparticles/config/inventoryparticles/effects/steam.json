@@ -1,0 +1,20 @@
+{
+    "emitters": [
+        {
+            "code": "steam",
+            "shape": "puff",
+            "rate": { "avg": 6, "var": 0 },
+            "origin": [ 0, 0.2 ],
+            "spawnArea": { "type": "box", "width": 0.45, "height": 0.06 },
+            "color": [ 230, 230, 230, 100 ],
+            "size": { "avg": 0.2, "var": 0.05 },
+            "sizeEvolve": { "transform": "linear", "factor": 1.4 },
+            "opacityEvolve": { "transform": "linear", "factor": -100 },
+            "lifeLength": { "avg": 1.6, "var": 0.3 },
+            "velocity": [ { "avg": 0, "var": 0.04 }, { "avg": 0.5, "var": 0.1 } ],
+            "drag": 0.4,
+            "wobble": { "amplitude": 0.04, "frequency": 0.8 },
+            "fadeIn": 0.2
+        }
+    ]
+}
