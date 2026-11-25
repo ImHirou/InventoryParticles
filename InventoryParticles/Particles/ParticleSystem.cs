@@ -243,6 +243,7 @@ internal sealed class ParticleSystem
             effect.AnchorX = x;
             effect.AnchorY = y;
             effect.AnchorSize = rect.Size;
+            effect.SetAnchorRotation(rect.Rotation);
             effect.HiddenFor = 0f;
             effect.HideFadeTriggered = false;
             return;
@@ -268,7 +269,7 @@ internal sealed class ParticleSystem
         {
             ref var p = ref particles[i];
 
-            if (ReferenceEquals(p.Owner, effect) && p.AnchorSpace && p.Age >= p.Hang)
+            if (ReferenceEquals(p.Owner, effect) && p.AnchorSpace && !p.ItemFrame)
             {
                 p.X -= dx;
                 p.Y -= dy;
@@ -363,6 +364,14 @@ internal sealed class ParticleSystem
         p.Hang = Math.Max(0f, Next(props.Hang));
         // A hanging particle stays on the item until it lets go, even if it moves in screen space afterwards.
         p.Clinging = p.Hang > 0f && !p.AnchorSpace;
+        // Meanwhile it sits on the turned item and turns with it; every other particle starts where the turned origin is now.
+        p.ItemFrame = p.Hang > 0f;
+
+        if (!p.ItemFrame)
+        {
+            effect.Turn(ref relativeX, ref relativeY);
+            effect.Turn(ref originX, ref originY);
+        }
 
         if (p.Relative)
         {
@@ -439,6 +448,14 @@ internal sealed class ParticleSystem
             return true;
         }
 
+        if (p.ItemFrame)
+        {
+            // Leave the item's frame as it is turned now.
+            p.ItemFrame = false;
+            owner.Turn(ref p.X, ref p.Y);
+            owner.Turn(ref p.CenterX, ref p.CenterY);
+        }
+
         if (p.Clinging)
         {
             // Let go of the item where it is now.
@@ -496,18 +513,33 @@ internal sealed class ParticleSystem
             return true;
         }
 
-        float x = p.X;
-        float y = p.Y;
-
-        if (p.Relative)
-        {
-            x += p.Owner.AnchorX;
-            y += p.Owner.AnchorY;
-        }
+        ScreenPosition(in p, out float x, out float y);
 
         // Stretched particles are up to four times as tall.
         float margin = p.Size0 * 4f + 2f;
         return x > -margin && y > -margin && x < ScreenWidth + margin && y < ScreenHeight + margin;
+    }
+
+    /// <summary> Where a particle is on screen, before its wobble. </summary>
+    internal static void ScreenPosition(in GuiParticle p, out float x, out float y)
+    {
+        x = p.X;
+        y = p.Y;
+
+        if (!p.Relative)
+        {
+            return;
+        }
+
+        var owner = p.Owner;
+
+        if (p.ItemFrame)
+        {
+            owner.Turn(ref x, ref y);
+        }
+
+        x += owner.AnchorX;
+        y += owner.AnchorY;
     }
 
     /// <summary> <see cref="EnumParticleLayer.AboveItem"/> is above the stack on the cursor only when the effect plays there. </summary>

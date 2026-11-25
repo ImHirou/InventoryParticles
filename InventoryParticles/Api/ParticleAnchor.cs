@@ -20,10 +20,16 @@ public abstract class ParticleAnchor
     /// <summary> Follows the slot while some open dialog shows it. </summary>
     public static ParticleAnchor Slot(ItemSlot slot) => new SlotAnchor(slot ?? throw new ArgumentNullException(nameof(slot)));
 
-    /// <summary> Follows the stack held on the mouse cursor. Hidden while no stack is held or no inventory is open. </summary>
+    /// <summary>
+    /// Follows the stack held on the mouse cursor. Hidden while no stack is held or no inventory is open. A mod that draws that stack
+    /// itself tells where with <see cref="IInventoryParticlesApi.SetCursorRectProvider"/>.
+    /// </summary>
     public static ParticleAnchor Cursor() => CursorAnchor.Instance;
 
-    /// <summary> Asks <paramref name="tracker"/> every frame; null means hidden. Use it for things that move on their own. </summary>
+    /// <summary>
+    /// Asks <paramref name="tracker"/> every frame; null means hidden. Use it for things that move on their own.
+    /// The rect's <see cref="GuiItemRect.Rotation"/> turns the effect with the item.
+    /// </summary>
     public static ParticleAnchor Tracked(Func<GuiItemRect?> tracker) => new TrackedAnchor(tracker ?? throw new ArgumentNullException(nameof(tracker)));
 
     /// <summary> True for the stack on the cursor, which is drawn above <see cref="EnumParticleLayer.BelowCursor"/>. </summary>
@@ -72,7 +78,7 @@ public abstract class ParticleAnchor
 
             if (result is { } value)
             {
-                rect = value.Size > 0f ? value : new GuiItemRect(value.CenterX, value.CenterY, resolver.SlotSize);
+                rect = value.Size > 0f ? value : new GuiItemRect(value.CenterX, value.CenterY, resolver.SlotSize, value.Rotation);
                 return true;
             }
 

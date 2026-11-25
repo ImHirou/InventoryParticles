@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using InventoryParticles.Definitions;
@@ -59,6 +60,14 @@ public interface IInventoryParticlesApi
 
     /// <summary> Where the stack held on the cursor was drawn in the last frame. </summary>
     GuiItemRect? CursorRect { get; }
+
+    /// <summary>
+    /// For a mod that draws the stack on the cursor itself, e.g. moved or turned: <paramref name="provider"/> is asked every frame
+    /// while that stack is shown and returns where its item is drawn, with <see cref="GuiItemRect.Rotation"/> if it is turned.
+    /// Null from it means the game's own place next to the mouse. Everything played at <see cref="ParticleAnchor.Cursor"/> follows it,
+    /// including the cursor and pickup effects of the rules. Only one provider is active: a new one replaces it, null removes it.
+    /// </summary>
+    void SetCursorRectProvider(Func<GuiItemRect?>? provider);
 
     /// <summary> The effects providers and rules pick for a stack right now, without playing them. </summary>
     List<ItemParticleMatch> GetItemParticles(ItemStack stack, EnumParticleTrigger trigger, ItemSlot? slot = null);

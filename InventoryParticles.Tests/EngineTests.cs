@@ -70,6 +70,7 @@ internal static class EngineTests
         Frames(particles, 1f);
         Check(particles.CursorRect is { } cursor && Near(cursor.CenterX, 314) && Near(cursor.CenterY, 316), $"Cursor rect follows the mouse, got {particles.CursorRect}");
         Check(env.Draws.Count > 0 && env.Draws.All(draw => Distance(draw, 314, 316) < MaxSpread), "The held temporal gear draws particles around the cursor stack");
+        CursorRectProvider(particles, env, log);
 
         // Closing the inventory: the held stack goes back and its particles vanish quickly instead of floating over the world.
         env.OpenedInventories.Clear();
@@ -355,6 +356,46 @@ internal static class EngineTests
         Check(particles.EffectCount == 1 && particles.ParticleCount > 0, "An empty hand shows nothing new");
         env.ActiveSlot = null;
         env.OffhandSlot = null;
+    }
+
+    /// <summary> A mod that draws the stack on the cursor itself (moved and turned) tells where it is. The mouse is at 300/300. </summary>
+    private static void CursorRectProvider(InventoryParticlesApi particles, FakeEnvironment env, Tests.TestLogger log)
+    {
+        var held = env.MouseSlot.Itemstack;
+        var torchflame = new AssetLocation(Domain, "torchflame");
+        env.MouseSlot.Itemstack = new ItemStack(Tests.MakeItem("game:torch-basic-lit-up"));
+
+        // Upside down, the flame of a lit torch comes out of its head, which is now below the centre.
+        particles.SetCursorRectProvider(() => new GuiItemRect(520, 400, 0f, MathF.PI));
+        Frames(particles, 0.25f);
+        Check(particles.CursorRect is { } provided && Near(provided.CenterX, 520) && Near(provided.CenterY, 400) && Near(provided.Size, 48) && Near(provided.Rotation, MathF.PI),
+            $"The cursor rect comes from the provider, with the slot size when it gives none, got {particles.CursorRect}");
+        var flames = particles.PositionsOf(torchflame);
+        Check(flames.Count > 3 && flames.All(point => Distance(point, 520, 400) < 30) && flames.All(point => point.Y > 400),
+            $"The flame of an upside-down torch on the cursor burns below its centre: {flames.Count(point => point.Y > 400)} of {flames.Count}");
+
+        // Upright at the same place it burns above the centre again, once the old particles are gone.
+        particles.SetCursorRectProvider(() => new GuiItemRect(520, 400, 0f));
+        Frames(particles, 1.6f);
+        flames = particles.PositionsOf(torchflame);
+        Check(flames.Count > 3 && flames.All(point => point.Y < 400), $"An upright torch burns above its centre: {flames.Count(point => point.Y < 400)} of {flames.Count}");
+
+        // A provider that throws is logged once and the stack is where the game draws it; null asks for that place too.
+        int messages = log.Messages.Count;
+        particles.SetCursorRectProvider(() => throw new InvalidOperationException("test provider"));
+        Frames(particles, 0.2f);
+        Check(particles.CursorRect is { } fallback && Near(fallback.CenterX, 314) && Near(fallback.CenterY, 316) && fallback.Rotation == 0f && log.Messages.Count == messages + 1,
+            $"A throwing provider is logged once and the cursor stack falls back to its place, got {particles.CursorRect}");
+        log.Messages.RemoveAt(log.Messages.Count - 1);
+        particles.SetCursorRectProvider(() => null);
+        Frames(particles, Frame);
+        Check(particles.CursorRect is { } own && Near(own.CenterX, 314) && Near(own.CenterY, 316), $"A provider returning null leaves the game's place, got {particles.CursorRect}");
+        particles.SetCursorRectProvider(null);
+        Frames(particles, Frame);
+        Check(particles.CursorRect is { } removed && Near(removed.CenterX, 314) && log.Messages.Count == messages, "Removing the provider leaves the game's place");
+
+        env.MouseSlot.Itemstack = held;
+        Frames(particles, 1.6f);
     }
 
     private static float ParticleSystemFade => InventoryParticles.Particles.ParticleSystem.HiddenGraceSeconds + InventoryParticles.Particles.ParticleSystem.FastFadeSeconds + 0.1f;

@@ -91,6 +91,12 @@ internal sealed class EffectInstance : IPlayback
 
     internal float AnchorSize { get; set; }
 
+    /// <summary> How far the anchor's item is turned, in radians, clockwise on screen. See <see cref="GuiItemRect.Rotation"/>. </summary>
+    internal float AnchorRotation { get; private set; }
+
+    private float anchorCos = 1f;
+    private float anchorSin;
+
     internal float HiddenFor { get; set; }
 
     internal bool HideFadeTriggered { get; set; }
@@ -100,6 +106,36 @@ internal sealed class EffectInstance : IPlayback
 
     /// <summary> The anchor was swapped: move the attached particles so that they stay where they are on screen. </summary>
     internal bool Rebase { get; set; }
+
+    internal void SetAnchorRotation(float rotation)
+    {
+        if (!float.IsFinite(rotation))
+        {
+            rotation = 0f;
+        }
+
+        if (rotation == AnchorRotation)
+        {
+            return;
+        }
+
+        AnchorRotation = rotation;
+        anchorCos = MathF.Cos(rotation);
+        anchorSin = MathF.Sin(rotation);
+    }
+
+    /// <summary> Turns an offset from the item's own frame (y down) into the screen's, by <see cref="AnchorRotation"/>. </summary>
+    internal void Turn(ref float x, ref float y)
+    {
+        if (AnchorRotation == 0f)
+        {
+            return;
+        }
+
+        float turnedX = anchorCos * x - anchorSin * y;
+        y = anchorSin * x + anchorCos * y;
+        x = turnedX;
+    }
 
     public void SetTint(Vec4f? tint)
     {

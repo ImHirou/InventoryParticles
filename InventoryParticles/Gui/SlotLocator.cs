@@ -42,6 +42,7 @@ internal sealed class SlotLocator : IAnchorResolver
     private readonly List<GuiElementItemSlotGridBase> hudGrids = new();
     private GuiDialog? ignoredDialog;
     private bool trackerErrorLogged;
+    private bool cursorProviderErrorLogged;
 
     public SlotLocator(ICoreClientAPI capi, ILogger logger)
     {
@@ -50,6 +51,9 @@ internal sealed class SlotLocator : IAnchorResolver
     }
 
     public float SlotSize => (float)GuiElement.scaled(GuiElementPassiveItemSlot.unscaledSlotSize);
+
+    /// <summary> Another mod's idea of where the stack on the cursor is drawn; see <see cref="IInventoryParticlesApi.SetCursorRectProvider"/>. </summary>
+    public Func<GuiItemRect?>? CursorRectProvider { get; set; }
 
     /// <summary> The particle layer itself, which has no slots. </summary>
     public void Ignore(GuiDialog? dialog) => ignoredDialog = dialog;
@@ -106,6 +110,11 @@ internal sealed class SlotLocator : IAnchorResolver
             return false;
         }
 
+        if (TryGetProvidedCursorRect(out rect))
+        {
+            return true;
+        }
+
         double offset = GuiElement.scaled(CursorSlotCenterOffset);
         rect = WithItemShift(capi.Input.MouseX + offset, capi.Input.MouseY + offset, slot.Itemstack);
         return true;
@@ -118,6 +127,42 @@ internal sealed class SlotLocator : IAnchorResolver
             trackerErrorLogged = true;
             logger.Error("A tracked particle anchor of another mod threw an exception, treating it as hidden (logged once): {0}", e);
         }
+    }
+
+    /// <summary> Asks the provider of another mod that draws the stack on the cursor itself. False means the game's own place. </summary>
+    private bool TryGetProvidedCursorRect(out GuiItemRect rect)
+    {
+        rect = default;
+
+        if (CursorRectProvider is not { } provider)
+        {
+            return false;
+        }
+
+        GuiItemRect? provided;
+
+        try
+        {
+            provided = provider();
+        }
+        catch (Exception e)
+        {
+            if (!cursorProviderErrorLogged)
+            {
+                cursorProviderErrorLogged = true;
+                logger.Error("The cursor rect provider of another mod threw an exception, using the default cursor position (logged once): {0}", e);
+            }
+
+            return false;
+        }
+
+        if (provided is not { } value || !double.IsFinite(value.CenterX) || !double.IsFinite(value.CenterY))
+        {
+            return false;
+        }
+
+        rect = value.Size > 0f ? value : new GuiItemRect(value.CenterX, value.CenterY, SlotSize, value.Rotation);
+        return true;
     }
 
     private bool TryGetHoveredRect(List<GuiElementItemSlotGridBase> list, ItemSlot slot, out GuiItemRect rect)

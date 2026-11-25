@@ -43,6 +43,7 @@ internal static class Tests
         HangingDrops(effects);
         OffScreen();
         Insects(effects);
+        Rotation();
         Check(log.Messages.Count == 0, "No warnings while testing: " + string.Join(" | ", log.Messages));
         EngineTests.Run(assets);
 
@@ -585,6 +586,92 @@ internal static class Tests
             float speed = speedSum / Math.Max(1, samples);
             Check(minAlive >= 1 && farthest < 48 * 0.85f && speed > 10f, $"{name} keep buzzing around the item: at least {minAlive} alive, up to {farthest:0} px away, {speed:0} px/s");
         }
+    }
+
+    /// <summary> Anchors of items another mod draws turned (<see cref="GuiItemRect.Rotation"/>). </summary>
+    private static void Rotation()
+    {
+        Check(new GuiItemRect(1, 2, 48).Rotation == 0f && new GuiItemRect(1, 2, 48, float.NaN).Rotation == 0f, "Rects are upright unless turned; NaN turns nothing");
+
+        float turn = MathF.PI;
+        var anchor = ParticleAnchor.Tracked(() => new GuiItemRect(100, 100, 48, turn));
+        var resolver = new FakeResolver();
+
+        // An origin above the item (+Y up) is below it when the item is upside down, and right of it after a clockwise quarter turn.
+        var system = new ParticleSystem(64, new Random(4));
+        var above = new GuiEmitterProps { Burst = 1, Rate = NatFloat.createUniform(0, 0), Origin = new[] { 0f, 0.3f }, LifeLength = NatFloat.createUniform(10, 0) };
+        system.Start(new AssetLocation("test:turned"), Effect(above), anchor);
+        system.Update(Frame, resolver);
+        Check(system.Count == 1 && Math.Abs(system.Particles[0].X - 100f) < 0.01f && Math.Abs(system.Particles[0].Y - (100f + 0.3f * 48)) < 0.01f,
+            $"An upside-down item spawns its 'above' origin below it, at {system.Particles[0].X}/{system.Particles[0].Y}");
+        system = new ParticleSystem(64, new Random(4));
+        turn = MathF.PI / 2f;
+        system.Start(new AssetLocation("test:turned"), Effect(above), anchor);
+        system.Update(Frame, resolver);
+        Check(Math.Abs(system.Particles[0].X - (100f + 0.3f * 48)) < 0.01f && Math.Abs(system.Particles[0].Y - 100f) < 0.01f,
+            $"A clockwise quarter turn moves the origin to the right, at {system.Particles[0].X}/{system.Particles[0].Y}");
+
+        // Spawn areas turn too: a flat box becomes an upright line.
+        system = new ParticleSystem(64, new Random(5));
+        var line = new GuiEmitterProps { Burst = 40, Rate = NatFloat.createUniform(0, 0), SpawnArea = new SpawnAreaProps { Type = EnumSpawnArea.Box, Width = 1f, Height = 0f }, LifeLength = NatFloat.createUniform(10, 0) };
+        system.Start(new AssetLocation("test:line"), Effect(line), anchor);
+        system.Update(Frame, resolver);
+        float minY = float.MaxValue, maxY = float.MinValue, maxDx = 0f;
+
+        foreach (ref readonly var p in system.Particles)
+        {
+            minY = Math.Min(minY, p.Y);
+            maxY = Math.Max(maxY, p.Y);
+            maxDx = Math.Max(maxDx, Math.Abs(p.X - 100f));
+        }
+
+        Check(system.Count == 40 && maxDx < 0.01f && maxY - minY > 30f, $"A flat spawn box turned by a quarter is upright: x within {maxDx}, y over {maxY - minY:0} px");
+
+        // Speeds stay in screen space: flames of an upside-down torch still rise.
+        system = new ParticleSystem(64, new Random(6));
+        turn = MathF.PI;
+        var rising = new GuiEmitterProps { Burst = 1, Rate = NatFloat.createUniform(0, 0), Velocity = new[] { NatFloat.createUniform(0, 0), NatFloat.createUniform(1, 0) }, LifeLength = NatFloat.createUniform(10, 0) };
+        system.Start(new AssetLocation("test:rising"), Effect(rising), anchor);
+        Simulate(system, 0.5f);
+        Check(system.Particles[0].Y < 100f - 10f, $"Velocities are not turned: a rising particle rises from an upside-down item, at y {system.Particles[0].Y}");
+
+        // A drop hanging on the item turns with it until it lets go; then it falls in screen space and no longer turns.
+        system = new ParticleSystem(64, new Random(7));
+        turn = 0f;
+        var drop = new GuiEmitterProps
+        {
+            Burst = 1,
+            Rate = NatFloat.createUniform(0, 0),
+            Origin = new[] { 0.3f, 0f },
+            Hang = NatFloat.createUniform(0.5f, 0),
+            LifeLength = NatFloat.createUniform(10, 0),
+            GravityEffect = NatFloat.createUniform(10, 0)
+        };
+        system.Start(new AssetLocation("test:turneddrop"), Effect(drop), anchor);
+        Simulate(system, 0.1f);
+        ParticleSystem.ScreenPosition(in system.Particles[0], out float x, out float y);
+        Check(system.Particles[0].ItemFrame && Math.Abs(x - (100f + 0.3f * 48)) < 0.01f && Math.Abs(y - 100f) < 0.01f, $"A hanging drop starts at its origin, at {x}/{y}");
+        turn = MathF.PI / 2f;
+        Simulate(system, 0.1f);
+        ParticleSystem.ScreenPosition(in system.Particles[0], out x, out y);
+        Check(Math.Abs(x - 100f) < 0.01f && Math.Abs(y - (100f + 0.3f * 48)) < 0.01f, $"A hanging drop turns with the item, at {x}/{y}");
+        Simulate(system, 0.4f);
+        var released = system.Particles[0];
+        Check(!released.ItemFrame && !released.Clinging && Math.Abs(released.X - 100f) < 0.5f && released.Y > 100f + 0.3f * 48, $"Then it lets go where it is and falls, at {released.X}/{released.Y}");
+        turn = 0f;
+        Simulate(system, Frame);
+        Check(Math.Abs(system.Particles[0].X - 100f) < 0.5f, "A falling drop does not turn with the item any more");
+
+        // Insects (anchor space) start at the turned origin and move with the item, but don't spin with it.
+        system = new ParticleSystem(64, new Random(8));
+        turn = MathF.PI / 2f;
+        var insect = new GuiEmitterProps { Burst = 1, Rate = NatFloat.createUniform(0, 0), Space = EnumParticleSpace.Anchor, Origin = new[] { 0.3f, 0f }, LifeLength = NatFloat.createUniform(10, 0) };
+        system.Start(new AssetLocation("test:turnedinsect"), Effect(insect), anchor);
+        system.Update(Frame, resolver);
+        turn = 0f;
+        system.Update(Frame, resolver);
+        ParticleSystem.ScreenPosition(in system.Particles[0], out x, out y);
+        Check(!system.Particles[0].ItemFrame && Math.Abs(x - 100f) < 0.01f && Math.Abs(y - (100f + 0.3f * 48)) < 0.01f, $"An anchor-space particle keeps its screen offset when the item turns back, at {x}/{y}");
     }
 
     private static GuiParticleEffect Effect(GuiEmitterProps props)

@@ -36,6 +36,7 @@ internal sealed class InventoryParticlesApi : IInventoryParticlesApi
     private readonly List<ItemParticleMatch> burstMatches = new();
     private readonly List<LeftEffect> leftEffects = new();
     private ItemParticlesEventArgs? eventArgs;
+    private Func<GuiItemRect?>? cursorRectProvider;
     private long nextId = 1;
 
     private ICoreClientAPI? capi;
@@ -85,7 +86,8 @@ internal sealed class InventoryParticlesApi : IInventoryParticlesApi
             {
                 if (particle.Owner.Code == effect)
                 {
-                    positions.Add(particle.Relative ? (particle.X + particle.Owner.AnchorX, particle.Y + particle.Owner.AnchorY) : (particle.X, particle.Y));
+                    ParticleSystem.ScreenPosition(in particle, out float x, out float y);
+                    positions.Add((x, y));
                 }
             }
         }
@@ -121,7 +123,7 @@ internal sealed class InventoryParticlesApi : IInventoryParticlesApi
         system = new ParticleSystem(settings.MaxParticles);
         textures = new ParticleTextures(api, log);
         system.TextureKey = textures.GetKey;
-        locator = new SlotLocator(api, log);
+        locator = new SlotLocator(api, log) { CursorRectProvider = cursorRectProvider };
         driver = new ItemParticleDriver(this, api);
         inspector = new StackInspector(api);
         rules.Attach(name => api.ClassRegistry.GetBlockClass(name) ?? api.ClassRegistry.GetItemClass(name), log, inspector);
@@ -317,9 +319,10 @@ internal sealed class InventoryParticlesApi : IInventoryParticlesApi
                 foreach (var emitter in effect.Effect.Emitters ?? Array.Empty<GuiEmitterProps>())
                 {
                     var origin = emitter?.Origin is { Length: >= 2 } value ? value : new[] { 0f, 0f };
-                    float x = effect.AnchorX + (origin[0] + effect.OriginX) * size;
-                    float y = effect.AnchorY - (origin[1] + effect.OriginY) * size;
-                    render.RenderRectangle(x - 1.5f, y - 1.5f, 60f, 3f, 3f, originColor);
+                    float x = (origin[0] + effect.OriginX) * size;
+                    float y = -(origin[1] + effect.OriginY) * size;
+                    effect.Turn(ref x, ref y);
+                    render.RenderRectangle(effect.AnchorX + x - 1.5f, effect.AnchorY + y - 1.5f, 60f, 3f, 3f, originColor);
                 }
             }
         }
@@ -743,6 +746,16 @@ internal sealed class InventoryParticlesApi : IInventoryParticlesApi
     {
         rect = default;
         return slot != null && locator != null && locator.TryGetSlotRect(slot, out rect);
+    }
+
+    public void SetCursorRectProvider(Func<GuiItemRect?>? provider)
+    {
+        cursorRectProvider = provider;
+
+        if (locator != null)
+        {
+            locator.CursorRectProvider = provider;
+        }
     }
 
     public List<ItemParticleMatch> GetItemParticles(ItemStack stack, EnumParticleTrigger trigger, ItemSlot? slot = null)

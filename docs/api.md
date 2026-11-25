@@ -205,10 +205,29 @@ Anchors:
 |---|---|
 | `ParticleAnchor.Point(x, y, size)` | A point in screen pixels (origin top left). `size` is the unit of length; 0 means the size of a slot |
 | `ParticleAnchor.Slot(slot)` | A slot, while some open dialog shows it |
-| `ParticleAnchor.Cursor()` | The stack on the cursor |
-| `ParticleAnchor.Tracked(func)` | The position `func` returns every frame |
+| `ParticleAnchor.Cursor()` | The stack on the cursor, where the game or the cursor provider (below) says it is |
+| `ParticleAnchor.Tracked(func)` | The position `func` returns every frame, turned by its `Rotation` |
 
 A hidden anchor spawns no particles. If it stays hidden for more than 0.1 s, its old particles fade quickly (`PlayOptions.FadeWhenHidden`).
+
+### Turned items
+
+`GuiItemRect` has a `Rotation`: how far the drawn item is turned around its centre, in radians, clockwise on screen (`new GuiItemRect(x, y, size, rotation)`). A `Tracked` anchor or the cursor provider below can return it. For a turned item:
+
+- emitter and rule `origin`s and the `spawnArea` turn with it, so the flame of an upside-down torch comes out of its head;
+- particles that `hang` on the item stay on it and turn with it until they let go;
+- velocities, gravity, swirl and wobble stay in screen space, so flames still rise and drops still fall;
+- `anchor` space particles (insects) start at the turned origin and then move with the item without spinning with it.
+
+### The stack on the cursor drawn by another mod
+
+A mod that draws the stack on the cursor itself, e.g. hanging from the mouse and turning, tells where it is:
+
+```csharp
+particles.SetCursorRectProvider(() => myCursor.IsDrawing ? new GuiItemRect(itemCenterX, itemCenterY, 0f, itemRotation) : null);
+```
+
+The function is asked every frame while the stack on the cursor is shown and returns the centre of the item as it is drawn (for items, not blocks, that is 3 px left of and 1 px above the centre of the slot they are drawn in, like everywhere in the GUI). Null, or a function that throws (logged once), means the game's own place next to the mouse; a size of 0 means the slot size. Everything that plays at `ParticleAnchor.Cursor()` follows it: the cursor and `pickup` effects of the rules, `CursorRect`, the `toohot` burst and effects that move between a slot and the cursor. There is one provider; a new one replaces it and `SetCursorRectProvider(null)` removes it.
 
 `PlayOptions`:
 

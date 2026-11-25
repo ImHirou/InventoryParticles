@@ -53,6 +53,11 @@ internal struct GuiParticle
     public bool AnchorSpace;
     /// <summary> A screen-space particle that still hangs on the item and follows the anchor until it lets go. </summary>
     public bool Clinging;
+    /// <summary>
+    /// While the particle hangs on the item, X/Y and the centre are in the item's own frame and turn with it
+    /// (<see cref="EffectInstance.AnchorRotation"/>). Every other relative particle only moves with the anchor.
+    /// </summary>
+    public bool ItemFrame;
 
     public readonly bool Relative => AnchorSpace || Clinging;
 }

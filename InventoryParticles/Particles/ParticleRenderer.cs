@@ -65,7 +65,6 @@ internal sealed class ParticleRenderer
     private bool TryGetVisual(in GuiParticle p, double time, out float x, out float y, out float width, out float height)
     {
         var props = p.Props;
-        var owner = p.Owner;
         float t = Math.Clamp(p.Age / p.Life, 0f, 1f);
         x = y = 0f;
 
@@ -121,14 +120,7 @@ internal sealed class ParticleRenderer
         float green = props.GreenEvolve != EvolvingNatFloat.NoValueSet ? props.GreenEvolve.nextFloat(p.G0, t) : p.G0;
         float blue = props.BlueEvolve != EvolvingNatFloat.NoValueSet ? props.BlueEvolve.nextFloat(p.B0, t) : p.B0;
 
-        x = p.X;
-        y = p.Y;
-
-        if (p.Relative)
-        {
-            x += owner.AnchorX;
-            y += owner.AnchorY;
-        }
+        ParticleSystem.ScreenPosition(in p, out x, out y);
 
         if (p.WobbleAmp != 0f)
         {
